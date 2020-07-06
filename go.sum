@@ -1,0 +1,4 @@
+github.com/klassmann/cpfcnpj v0.0.0-20180626213909-2c909902074a h1:Ve3K1SCSOMZIz25iPvh9lM/UT/SnKZy4m7ZhPepl1EM=
+github.com/klassmann/cpfcnpj v0.0.0-20180626213909-2c909902074a/go.mod h1:2lGFirXS+qsYDFtk4OAzWXyILL3mrSAluEH26Ao65ZY=
+github.com/lib/pq v1.7.0 h1:h93mCPfUSkaul3Ka/VG8uZdmW1uMHDGxzu0NWHuJmHY=
+github.com/lib/pq v1.7.0/go.mod h1:AlVN5x4E4T544tWzH6hKfbfQvm3HdbOxrmggDNAPY9o=
