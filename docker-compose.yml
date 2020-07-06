@@ -1,0 +1,22 @@
+version: '3.1'
+services:
+  db:
+    container_name: postgresdb
+    image: postgres:12.3
+    ports:
+      - 5432:5432
+    env_file:
+      - database.env
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./resource/ddl/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      net:
+        aliases:
+          - etl
+
+volumes:
+  db_data:
+
+networks:
+  net:

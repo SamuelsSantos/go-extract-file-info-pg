@@ -38,6 +38,8 @@ Nota:
 
 ## Tabelas
 
+O arquivo de inicialização das tabelas encontre-se [aqui](./resource/ddl/init.sql). Ao subir os containers ele é executado automaticamente.
+
 ### Shopping
 
 ```sql

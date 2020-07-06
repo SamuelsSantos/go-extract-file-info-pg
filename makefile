@@ -1,6 +1,7 @@
 NAME=import-data
 
 build:
+	rm -rf build
 	go build -o build/$(NAME) $(NAME).go
 
 run:
@@ -16,3 +17,7 @@ all: $(NAME) build
 
 docker-build: build
 	@docker image build -t $(NAME) .
+
+
+docker-run:
+	@docker run --rm -v /Users/samuelsantos/git/import-data/resource:/files --name import-data --net import-data_net import-data:latest -file=/files/test.txt 
