@@ -24,4 +24,4 @@ docker-compose: docker-build
 
 
 docker-run:
-	@docker run --rm -v $(VOLUME):/files --env-file=.env --name extractor-cmd --net import-data_net extractor-cmd:latest -file=/files/$(FILE)
+	@docker run --rm -v $(VOLUME):/files --env-file=.env --name extractor-cmd --net import-data_net extractor-cmd:latest -file=/files/$(FILENAME)
