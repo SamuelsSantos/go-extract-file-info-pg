@@ -49,8 +49,8 @@ func (r *InconsistencyRepo) SaveMany(incosistencies entity.Inconsistencies) {
 }
 
 // GetAll incosistencies
-func (r *InconsistencyRepo) GetAll() (entity.Inconsistencies, error) {
-	return nil, nil
+func (r *InconsistencyRepo) GetAll() (*sql.Rows, error) {
+	return FindAll(r.db, "select * from inconsistency")
 }
 
 // Truncate clean database and restar identity

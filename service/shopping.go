@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/bdwilliams/go-jsonify/jsonify"
 	"github.com/desafios-job/import-data/domain/entity"
 	"github.com/desafios-job/import-data/domain/repository"
 )
@@ -12,7 +13,7 @@ type shoppingApp struct {
 // ShoppingAppInterface shopping service layer
 type ShoppingAppInterface interface {
 	SaveMany(shoppings entity.Shoppings)
-	GetAll() (entity.Shoppings, error)
+	GetAll() ([]string, error)
 	Truncate() error
 }
 
@@ -22,8 +23,13 @@ func (s *shoppingApp) SaveMany(shoppings entity.Shoppings) {
 }
 
 // GetAll shoppings service layer
-func (s *shoppingApp) GetAll() (entity.Shoppings, error) {
-	return s.repo.GetAll()
+func (s *shoppingApp) GetAll() ([]string, error) {
+	rows, err := s.repo.GetAll()
+	if err != nil {
+		return nil, err
+	}
+
+	return jsonify.Jsonify(rows), nil
 }
 
 // GetAll Truncate service layer

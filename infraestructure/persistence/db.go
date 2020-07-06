@@ -70,3 +70,8 @@ func TruncateTable(db *sql.DB, table string) error {
 
 	return err
 }
+
+// FindAll get all records from entity
+func FindAll(db *sql.DB, query string) (*sql.Rows, error) {
+	return db.Query(query)
+}

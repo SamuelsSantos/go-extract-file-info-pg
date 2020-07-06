@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/bdwilliams/go-jsonify/jsonify"
 	"github.com/desafios-job/import-data/domain/entity"
 	"github.com/desafios-job/import-data/domain/repository"
 )
@@ -12,7 +13,7 @@ type inconsistencyApp struct {
 // InconsistencyAppInterface inconsistency service layer
 type InconsistencyAppInterface interface {
 	SaveMany(inconsistencies entity.Inconsistencies)
-	GetAll() (entity.Inconsistencies, error)
+	GetAll() ([]string, error)
 	Truncate() error
 }
 
@@ -22,8 +23,14 @@ func (i *inconsistencyApp) SaveMany(inconsistencies entity.Inconsistencies) {
 }
 
 // GetAll inconsistency service layer
-func (i *inconsistencyApp) GetAll() (entity.Inconsistencies, error) {
-	return i.repo.GetAll()
+func (i *inconsistencyApp) GetAll() ([]string, error) {
+
+	rows, err := i.repo.GetAll()
+	if err != nil {
+		return nil, err
+	}
+
+	return jsonify.Jsonify(rows), nil
 }
 
 // Truncate inconsistency service layer

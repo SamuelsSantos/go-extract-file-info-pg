@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"flag"
-	"fmt"
 	"log"
 
 	"github.com/desafios-job/import-data/infraestructure/persistence"
@@ -13,7 +12,7 @@ import (
 
 const (
 	dbdriver = "postgres"
-	host     = "postgresdb"
+	host     = "localhost"
 	port     = "5432"
 	user     = "postgres"
 	password = "neoway"
@@ -63,8 +62,6 @@ func main() {
 	if fn == "" {
 		log.Fatal(errors.New("File parameter was not informed! Exemplo: -file=./resource/file.txt"))
 	}
-
-	fmt.Println(fn)
 
 	doProcess(fn)
 }

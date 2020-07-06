@@ -1,10 +1,14 @@
 package repository
 
-import "github.com/desafios-job/import-data/domain/entity"
+import (
+	"database/sql"
+
+	"github.com/desafios-job/import-data/domain/entity"
+)
 
 // ShoppingRepository repository
 type ShoppingRepository interface {
 	SaveMany(shoppings entity.Shoppings)
-	GetAll() (entity.Shoppings, error)
+	GetAll() (*sql.Rows, error)
 	Truncate() error
 }

@@ -49,8 +49,8 @@ func (r *ShoppingRepo) SaveMany(shoppings entity.Shoppings) {
 }
 
 // GetAll shoppings
-func (r *ShoppingRepo) GetAll() (entity.Shoppings, error) {
-	return nil, nil
+func (r *ShoppingRepo) GetAll() (*sql.Rows, error) {
+	return FindAll(r.db, "select * from shopping")
 }
 
 // Truncate clean database and restar identity
