@@ -5,31 +5,33 @@ import (
 	"flag"
 	"log"
 
+	"github.com/desafios-job/import-data/infraestructure/config"
 	"github.com/desafios-job/import-data/infraestructure/persistence"
 	"github.com/desafios-job/import-data/service"
 	_ "github.com/lib/pq"
 )
 
-const (
-	dbdriver = "postgres"
-	host     = "localhost"
-	port     = "5432"
-	user     = "postgres"
-	password = "neoway"
-	dbname   = "import-data"
-	limit    = 65535 //Postgress limit parameters
-)
-
 func doProcess(filename string) {
+
+	conf := config.GetConf()
 
 	if len(filename) == 0 {
 		log.Fatal(errors.New("Invalid input. "))
 	}
 
-	services, err := persistence.NewRepositories(dbdriver, user, password, port, host, dbname)
+	services, err := persistence.NewRepositories(
+		conf.DbDriver,
+		conf.DbUser,
+		conf.DbPassword,
+		conf.DbPort,
+		conf.DbHost,
+		conf.DbName,
+	)
+
 	if err != nil {
 		panic(err)
 	}
+
 	defer services.Close()
 
 	dw := service.DWNeoway{

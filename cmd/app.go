@@ -5,21 +5,12 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/desafios-job/import-data/infraestructure/config"
 	"github.com/desafios-job/import-data/infraestructure/persistence"
 	"github.com/desafios-job/import-data/service"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	_ "github.com/lib/pq"
-)
-
-const (
-	dbdriver = "postgres"
-	host     = "127.0.0.1"
-	port     = "5432"
-	user     = "postgres"
-	password = "neoway"
-	dbname   = "import-data"
-	limit    = 65535 //Postgress limit parameters
 )
 
 // App handle rest
@@ -82,7 +73,17 @@ func newRouter(app *App) *chi.Mux {
 
 func main() {
 
-	services, err := persistence.NewRepositories(dbdriver, user, password, port, host, dbname)
+	conf := config.GetConf()
+
+	services, err := persistence.NewRepositories(
+		conf.DbDriver,
+		conf.DbUser,
+		conf.DbPassword,
+		conf.DbPort,
+		conf.DbHost,
+		conf.DbName,
+	)
+
 	if err != nil {
 		panic(err)
 	}
@@ -94,8 +95,8 @@ func main() {
 	}
 
 	appRouter := newRouter(app)
-	address := fmt.Sprintf(":%d", 8005)
-	log.Printf("Starting server 0.0.0.0%s\n", address)
+	address := fmt.Sprintf(":%s", conf.ServerPort)
+	log.Printf("Starting server 0.0.0.0:%s\n", conf.ServerPort)
 
 	http.ListenAndServe(address, appRouter)
 }

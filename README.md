@@ -36,9 +36,11 @@ Nota:
  - Você pode escolher sua abordagem de arquitetura e solução técnica.
 
 
-## Tabelas
+# Tabelas
 
 O arquivo de inicialização das tabelas encontre-se [aqui](./resource/ddl/init.sql). Ao subir os containers ele é executado automaticamente.
+
+> **As tabelas são criadas automaticamente**: Não precisa rodar os scripts!
 
 ### Shopping
 
@@ -78,7 +80,7 @@ CREATE TABLE inconsistency (
  | 1   | ./resource/teste.txt | CNPJ is invalid! [last_store:04209828840]. |
 
 
-### Metodologia
+# Metodologia
 
 - Como não era requisito manter a ordem de inserção e dado que o **custo** de _uma inserção_ no **PostGres** é quase o mesmo que a inserção de _multiplas linhas_ resolvi paralelizar a inserção dos dados. O PostGres tem um limite de campos a serem preenchidos em inserções de multiplas linhas, este limite é de: 
   
@@ -95,20 +97,81 @@ CREATE TABLE inconsistency (
 
 		Portanto, neste cenário posso paralelizar a inserção em 6 chamadas de 8125 linhas e executar mais um lanço somente com os itens restantes. 
 
+- Caso alguma linha contenha dados inválidos os registro serão salvos na tabela de inconsistências.
 
-### Enviroments
+- Temos um modulo server para consulta dos dados importados 
+- Temos um modulo cmd para importar os dados.
+- Ambos os modulos estão conteinerizados, porém o cmd o ciclo de vida é por execução.
+
+# Enviroments
 
 ```env
-  POSTGRES_USER=postgres
-  POSTGRES_PASSWORD=navita
-  POSTGRES_DB=patrimonios
+  	DB_DRIVER=postgres
+	DB_HOST=postgres
+	DB_USER=postgres 
+	DB_NAME=import-data
+	DB_PORT=5432
+	DB_PASSWORD=db@123A
+	SERVER_PORT=8085
 ```
 
-### Repository
+# Repository
 
  - **SaveMany:** _Grava uma coleção de dados._
 
  - **GetAll:** _Retorna uma coleção de dados._
 
  - **Truncate:** _Limpa a tabela e reinicia a pk._
+
+
+# Endpoints  
+  
+
+#### Consultar itens importados
+
+```bash
+curl --location --request GET 'http://localhost:8085/shoppings' 
+```
+
+#### Consultar inconsistências
+
+```bash
+curl --location --request GET 'http://localhost:8085/inconsistencies' 
+```
+
+# Passos para testar
+
+Dependências:
+ - Docker 
+ - Docker Compose
+ - Make
+
+Caso queira visualizar os *comandos* disponíveis com mais detalhe, acesse [aqui](./makefile).
+
+#### Baixar Repositório
+```bash
+git clone https://github.com/desafios-job/import-data.git && cd import-data
+```
+
+#### Build
+```bash
+make docker-compose
+```
+
+#### Executar o EXTRACT
+
+##### Argumentos
+
+ - **VOLUME** -> indica onde será referenciado o volume para acesso do container ao filesystem.
+
+	Ex: */Users/samuelsantos/git/import-data/resource*
+
+ - **FILENAME** -> Nome do arquivo para importação. 
+	
+	Ex: */files/testb.txt*. 
+
+> Será necessário avaliar se o docker tem permissão de acesso ao volume informado no argumento *VOLUME*.
+```
+make docker-run VOLUME=$(VOLUME) FILENAME=$(FILENAME)
+```
 
