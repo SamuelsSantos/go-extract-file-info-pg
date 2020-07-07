@@ -98,6 +98,7 @@ CREATE TABLE inconsistency (
 		Portanto, neste cenário posso paralelizar a inserção em 6 chamadas de 8125 linhas e executar mais um lanço somente com os itens restantes. 
 
 - Caso alguma linha contenha dados inválidos os registro serão salvos na tabela de inconsistências.
+- Antes da importação um Truncate é executado para limpar a tabela de stage.
 
 - Temos um modulo server para consulta dos dados importados 
 - Temos um modulo cmd para importar os dados.
@@ -168,7 +169,7 @@ make docker-compose
 
  - **FILENAME** -> Nome do arquivo para importação. 
 	
-	Ex: */files/testb.txt*. 
+	Ex: *base_test.txt*. 
 
 > Será necessário avaliar se o docker tem permissão de acesso ao volume informado no argumento *VOLUME*.
 ```
