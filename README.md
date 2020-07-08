@@ -4,37 +4,35 @@ Desenvolva um serviço de manipulação de dados e persistência em base de dado
 
 Requisitos:
 
-- Criar um serviço em GO que receba um arquivo csv/txt de entrada (Arquivo Anexo)
-- Este serviço deve persistir no banco de dados relacional (postgresql) todos os dados contidos no arquivo
-  Obs: O arquivo não possui um separador muito convencional
- 
-- Deve-se fazer o split dos dados em colunas no banco de dados
- Obs: pode ser feito diretamente no serviço em GO ou em sql
- 
-- Realizar higienização dos dados após persistência (sem acento, maiúsculo, etc)
-- Validar os CPFs/CNPJs contidos (válidos e não válidos numericamente)
-- Todo o código deve estar disponível em repositório público do GIT
- 
+-   Criar um serviço em GO que receba um arquivo csv/txt de entrada (Arquivo Anexo)
+-   Este serviço deve persistir no banco de dados relacional (postgresql) todos os dados contidos no arquivo
+    Obs: O arquivo não possui um separador muito convencional
+
+-   Deve-se fazer o split dos dados em colunas no banco de dados
+    Obs: pode ser feito diretamente no serviço em GO ou em sql
+
+-   Realizar higienização dos dados após persistência (sem acento, maiúsculo, etc)
+-   Validar os CPFs/CNPJs contidos (válidos e não válidos numericamente)
+-   Todo o código deve estar disponível em repositório público do GIT
+
 Desejável:
 
-- Utilização das linguagen GOLANG para o desenvolvimento do serviço
-- Utilização do DB Postgres
-- Docker Compose , com orientações para executar (arquivo readme) 
+-   Utilização das linguagen GOLANG para o desenvolvimento do serviço
+-   Utilização do DB Postgres
+-   Docker Compose , com orientações para executar (arquivo readme)
 
 Você será avaliado por:
 
-- Utilização de melhores práticas de desenvolvimento (nomenclatura, funções, classes, etc);
-- Utilização dos recursos mais recentes das linguagens;
-- Boa organização lógica e documental (readme, comentários, etc);
-- Cobertura de todos os requisitos obrigatórios.
-
+-   Utilização de melhores práticas de desenvolvimento (nomenclatura, funções, classes, etc);
+-   Utilização dos recursos mais recentes das linguagens;
+-   Boa organização lógica e documental (readme, comentários, etc);
+-   Cobertura de todos os requisitos obrigatórios.
 
 Nota:
 
- - Todo a estrutura relacional deve estar documentada (criação das tabelas, etc)
- - Criação de um arquivo README com as instruções de instalação         juntamente com as etapas necessárias para configuração.
- - Você pode escolher sua abordagem de arquitetura e solução técnica.
-
+-   Todo a estrutura relacional deve estar documentada (criação das tabelas, etc)
+-   Criação de um arquivo README com as instruções de instalação juntamente com as etapas necessárias para configuração.
+-   Você pode escolher sua abordagem de arquitetura e solução técnica.
 
 # Tabelas
 
@@ -58,12 +56,11 @@ CREATE TABLE shopping (
 );
 ```
 
- | id  | customer_id | private | incomplete | last_shop  | avg_ticket | last_ticket_shop | most_frequented_store | last_store     |
- | --- | ----------- | ------- | ---------- | ---------- | ---------- | ---------------- | --------------------- | -------------- |
- | 1   | 08903682955 | 0       | 0          | 2013-06-12 | 53.25      | 53.25            | 79379491000850        | 79379491000850 |
- | 2   | 34524472860 | 0       | 0          | 2013-06-12 | 91.28      | 91.28            | 79379491000850        | 79379491000850 |
- | 3   | 34850830030 | 0       | 0          | 2013-06-12 | 72.05      | 72.05            |
-
+| id  | customer_id | private | incomplete | last_shop  | avg_ticket | last_ticket_shop | most_frequented_store | last_store     |
+| --- | ----------- | ------- | ---------- | ---------- | ---------- | ---------------- | --------------------- | -------------- |
+| 1   | 08903682955 | 0       | 0          | 2013-06-12 | 53.25      | 53.25            | 79379491000850        | 79379491000850 |
+| 2   | 34524472860 | 0       | 0          | 2013-06-12 | 91.28      | 91.28            | 79379491000850        | 79379491000850 |
+| 3   | 34850830030 | 0       | 0          | 2013-06-12 | 72.05      | 72.05            |
 
 ### Inconsistency
 
@@ -75,41 +72,40 @@ CREATE TABLE inconsistency (
 );
 ```
 
- | id  | filename             | error_message                              |
- | --- | -------------------- | ------------------------------------------ |
- | 1   | ./resource/teste.txt | CNPJ is invalid! [last_store:04209828840]. |
-
+| id  | filename             | error_message                              |
+| --- | -------------------- | ------------------------------------------ |
+| 1   | ./resource/teste.txt | CNPJ is invalid! [last_store:04209828840]. |
 
 # Metodologia
 
-- Como não era requisito manter a ordem de inserção e dado que o **custo** de _uma inserção_ no **PostGres** é quase o mesmo que a inserção de _multiplas linhas_ resolvi paralelizar a inserção dos dados. O PostGres tem um limite de campos a serem preenchidos em inserções de multiplas linhas, este limite é de: 
-  
-  > 65535 - Postgress limit parameters
+-   Como não era requisito manter a ordem de inserção e dado que o **custo** de _uma inserção_ no **PostGres** é quase o mesmo que a inserção de _multiplas linhas_ resolvi paralelizar a inserção dos dados. O PostGres tem um limite de campos a serem preenchidos em inserções de multiplas linhas, este limite é de:
 
-  Para evitar o erro: *Postgress limit parameters*, busquei um denominador que executasse um número maior de inserções garantido uma performance desejável e sem que o erro ocorresse. Basicamente dividindo o número de parameters pelo número de atributos do modelo. Para facilitar a compreensão, arredondei o limite para 65000. Veja:
+    > 65535 - Postgress limit parameters
 
-  > 65000 / 8 = 8125 -> Denominador == 8125
-    
-		Dado que há 49999 linhas
-		E um modelo de 8 atributos
-		Quando 49999 é dividido por 8125 
-		Então o resultado é 6.
+    Para evitar o erro: _Postgress limit parameters_, busquei um denominador que executasse um número maior de inserções garantido uma performance desejável e sem que o erro ocorresse. Basicamente dividindo o número de parameters pelo número de atributos do modelo. Para facilitar a compreensão, arredondei o limite para 65000. Veja:
 
-		Portanto, neste cenário posso paralelizar a inserção em 6 chamadas de 8125 linhas e executar mais um lanço somente com os itens restantes. 
+    > 65000 / 8 = 8125 -> Denominador == 8125
 
-- Caso alguma linha contenha dados inválidos os registro serão salvos na tabela de inconsistências.
-- Antes da importação um Truncate é executado para limpar a tabela de stage.
+        		Dado que há 49999 linhas
+        		E um modelo de 8 atributos
+        		Quando 49999 é dividido por 8125
+        		Então o resultado é 6.
 
-- Temos um modulo server para consulta dos dados importados 
-- Temos um modulo cmd para importar os dados.
-- Ambos os modulos estão conteinerizados, porém o cmd o ciclo de vida é por execução.
+        		Portanto, neste cenário posso paralelizar a inserção em 6 chamadas de 8125 linhas e executar mais um lanço somente com os itens restantes.
+
+-   Caso alguma linha contenha dados inválidos os registro serão salvos na tabela de inconsistências.
+-   Antes da importação um Truncate é executado para limpar a tabela de stage.
+
+-   Temos um modulo server para consulta dos dados importados
+-   Temos um modulo cmd para importar os dados.
+-   Ambos os modulos estão conteinerizados, porém o cmd o ciclo de vida é por execução.
 
 # Enviroments
 
 ```env
   	DB_DRIVER=postgres
 	DB_HOST=postgres
-	DB_USER=postgres 
+	DB_USER=postgres
 	DB_NAME=import-data
 	DB_PORT=5432
 	DB_PASSWORD=db@123A
@@ -118,61 +114,67 @@ CREATE TABLE inconsistency (
 
 # Repository
 
- - **SaveMany:** _Grava uma coleção de dados._
+-   **SaveMany:** _Grava uma coleção de dados._
 
- - **GetAll:** _Retorna uma coleção de dados._
+-   **GetAll:** _Retorna uma coleção de dados._
 
- - **Truncate:** _Limpa a tabela e reinicia a pk._
+-   **Truncate:** _Limpa a tabela e reinicia a pk._
 
-
-# Endpoints  
-  
+# Endpoints
 
 #### Consultar itens importados
 
 ```bash
-curl --location --request GET 'http://localhost:8085/shoppings' 
+curl --location --request GET 'http://localhost:8085/shoppings'
 ```
 
 #### Consultar inconsistências
 
 ```bash
-curl --location --request GET 'http://localhost:8085/inconsistencies' 
+curl --location --request GET 'http://localhost:8085/inconsistencies'
 ```
 
 # Passos para testar
 
 Dependências:
- - Docker 
- - Docker Compose
- - Make
 
-Caso queira visualizar os *comandos* disponíveis com mais detalhe, acesse [aqui](./makefile).
+-   Docker
+-   Docker Compose
+-   Make
+
+Caso queira visualizar os _comandos_ disponíveis com mais detalhe, acesse [aqui](./makefile).
 
 #### Baixar Repositório
+
 ```bash
 git clone https://github.com/desafios-job/import-data.git && cd import-data
 ```
 
 #### Build
+
 ```bash
 make docker-compose
+```
+
+#### Clean
+
+```bash
+make docker-cleante 
 ```
 
 #### Executar o EXTRACT
 
 ##### Argumentos
 
- - **VOLUME** -> indica onde será referenciado o volume para acesso do container ao filesystem.
+-   **VOLUME** -> indica onde será referenciado o volume para acesso do container ao filesystem.
 
-	Ex: */Users/samuelsantos/git/import-data/resource*
+        	Ex: */Users/samuelsantos/git/import-data/resource*
 
- - **FILENAME** -> Nome do arquivo para importação. 
-	
-	Ex: *base_test.txt*. 
+-   **FILENAME** -> Nome do arquivo para importação.
+    Ex: _base_test.txt_.
 
-> Será necessário avaliar se o docker tem permissão de acesso ao volume informado no argumento *VOLUME*.
+> Será necessário avaliar se o docker tem permissão de acesso ao volume informado no argumento _VOLUME_.
+
 ```
 make docker-run VOLUME=$(VOLUME) FILENAME=$(FILENAME)
 ```
-
