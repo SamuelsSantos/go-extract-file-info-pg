@@ -159,7 +159,7 @@ make docker-compose
 #### Clean
 
 ```bash
-make docker-cleante 
+make docker-clean
 ```
 
 #### Executar o EXTRACT
