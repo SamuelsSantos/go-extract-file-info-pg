@@ -36,7 +36,7 @@ jobs:
         fi
 
     - name: Build Extractor CMD
-      run: go build -o build/$(EXTRACTOR) import-data.go
+      run: go build -o build/$EXTRACTOR import-data.go
 
     - name: Build Server
-      run: go build -o build/$(SERVER) cmd/app.go
+      run: go build -o build/$SERVER cmd/app.go
