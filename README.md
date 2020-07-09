@@ -1,5 +1,7 @@
 # Objetivo
 
+![Go](https://github.com/desafios-job/import-data/workflows/Go/badge.svg)
+
 Desenvolva um serviço de manipulação de dados e persistência em base de dados relacional.
 
 Requisitos:
