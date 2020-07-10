@@ -1,6 +1,6 @@
 # Objetivo
 
-![Go](https://github.com/desafios-job/import-data/workflows/Go/badge.svg)
+![BUILD-ALL](https://github.com/desafios-job/import-data/workflows/Go/badge.svg)
 
 Desenvolva um serviço de manipulação de dados e persistência em base de dados relacional.
 
@@ -82,7 +82,7 @@ CREATE TABLE inconsistency (
 
 -   Como não era requisito manter a ordem de inserção e dado que o **custo** de _uma inserção_ no **PostGres** é quase o mesmo que a inserção de _multiplas linhas_ resolvi paralelizar a inserção dos dados. O PostGres tem um limite de campos a serem preenchidos em inserções de multiplas linhas, este limite é de:
 
-    > 65535 - Postgress limit parameters
+    > 65535 - [Postgress limit parameters](https://www.postgresql.org/docs/8.4/hstore.html)
 
     Para evitar o erro: _Postgress limit parameters_, busquei um denominador que executasse um número maior de inserções garantido uma performance desejável e sem que o erro ocorresse. Basicamente dividindo o número de parameters pelo número de atributos do modelo. Para facilitar a compreensão, arredondei o limite para 65000. Veja:
 
