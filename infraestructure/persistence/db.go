@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/desafios-job/import-data/domain/repository"
-	config "github.com/desafios-job/import-data/infraestructure/configs"
+	"github.com/desafios-job/import-data/infraestructure/config"
 )
 
 const dbURL = "host=%s port=%s user=%s password=%s dbname=%s sslmode=disable "
@@ -20,9 +20,9 @@ type Repositories struct {
 }
 
 // NewRepositories struct
-func NewRepositories(cfg config.DbConfig) (*Repositories, error) {
+func NewRepositories(cfg config.Config) (*Repositories, error) {
 
-	dB, err := sql.Open(cfg.Driver, fmt.Sprintf(dbURL, cfg.Host, cfg.Port, cfg.User, cfg.Password, cfg.Name))
+	dB, err := sql.Open(cfg.Db.Driver, fmt.Sprintf(dbURL, cfg.Db.Host , cfg.Db.Port, cfg.Db.User, cfg.Db.Password, cfg.Db.Name))
 	if err != nil {
 		panic(err)
 	}

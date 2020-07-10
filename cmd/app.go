@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	config "github.com/desafios-job/import-data/infraestructure/configs"
+	"github.com/desafios-job/import-data/infraestructure/config"
 	"github.com/desafios-job/import-data/infraestructure/persistence"
 	"github.com/desafios-job/import-data/service"
 	"github.com/go-chi/chi"
@@ -75,7 +75,7 @@ func main() {
 
 	cfg := config.NewConfig()
 
-	services, err := persistence.NewRepositories(*cfg.Db)
+	services, err := persistence.NewRepositories(*cfg)
 
 	if err != nil {
 		panic(err)

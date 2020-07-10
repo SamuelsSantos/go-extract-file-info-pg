@@ -5,7 +5,7 @@ import (
 	"flag"
 	"log"
 
-	config "github.com/desafios-job/import-data/infraestructure/configs"
+	"github.com/desafios-job/import-data/infraestructure/config"
 	"github.com/desafios-job/import-data/infraestructure/persistence"
 	"github.com/desafios-job/import-data/service"
 	_ "github.com/lib/pq"
@@ -19,7 +19,7 @@ func doProcess(filename string) {
 		log.Fatal(errors.New("Invalid input. "))
 	}
 
-	services, err := persistence.NewRepositories(*cfg.Db)
+	services, err := persistence.NewRepositories(*cfg)
 
 	if err != nil {
 		panic(err)
