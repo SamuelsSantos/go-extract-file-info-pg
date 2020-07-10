@@ -37,8 +37,8 @@ func (s *shoppingApp) Truncate() error {
 	return s.repo.Truncate()
 }
 
-// NewShoppingApp instance
-func NewShoppingApp(repository repository.ShoppingRepository) ShoppingAppInterface {
+// NewShoppingService instance
+func NewShoppingService(repository repository.ShoppingRepository) ShoppingAppInterface {
 	return &shoppingApp{
 		repo: repository,
 	}

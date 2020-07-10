@@ -73,16 +73,9 @@ func newRouter(app *App) *chi.Mux {
 
 func main() {
 
-	conf := config.GetConf()
+	cfg := config.NewConfig()
 
-	services, err := persistence.NewRepositories(
-		conf.DbDriver,
-		conf.DbUser,
-		conf.DbPassword,
-		conf.DbPort,
-		conf.DbHost,
-		conf.DbName,
-	)
+	services, err := persistence.NewRepositories(*cfg.Db)
 
 	if err != nil {
 		panic(err)
@@ -90,13 +83,13 @@ func main() {
 	defer services.Close()
 
 	app := &App{
-		InconsistencyApp: service.NewInconsistencyApp(services.Inconsistency),
-		ShoppingApp:      service.NewShoppingApp(services.Shopping),
+		InconsistencyApp: service.NewInconsistencyService(services.Inconsistency),
+		ShoppingApp:      service.NewShoppingService(services.Shopping),
 	}
 
-	appRouter := newRouter(app)
-	address := fmt.Sprintf(":%s", conf.ServerPort)
-	log.Printf("Starting server 0.0.0.0:%s\n", conf.ServerPort)
+	address := fmt.Sprintf(":%s", cfg.Server.Port)
+	log.Printf("Starting server 0.0.0.0%s\n", address)
+	log.Println(cfg.Db.ToString())
 
-	http.ListenAndServe(address, appRouter)
+	http.ListenAndServe(address, newRouter(app))
 }

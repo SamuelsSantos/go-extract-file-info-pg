@@ -7,7 +7,10 @@ import (
 	"strings"
 
 	"github.com/desafios-job/import-data/domain/repository"
+	"github.com/desafios-job/import-data/infraestructure/config"
 )
+
+const dbURL = "host=%s port=%s user=%s password=%s dbname=%s sslmode=disable "
 
 // Repositories struct
 type Repositories struct {
@@ -17,17 +20,17 @@ type Repositories struct {
 }
 
 // NewRepositories struct
-func NewRepositories(Dbdriver, DbUser, DbPassword, DbPort, DbHost, DbName string) (*Repositories, error) {
-	DBURL := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable password=%s", DbHost, DbPort, DbUser, DbName, DbPassword)
-	db, err := sql.Open("postgres", DBURL)
+func NewRepositories(cfg config.DbConfig) (*Repositories, error) {
+
+	dB, err := sql.Open(cfg.Driver, fmt.Sprintf(dbURL, cfg.Host, cfg.Port, cfg.User, cfg.Password, cfg.Name))
 	if err != nil {
 		panic(err)
 	}
 
 	return &Repositories{
-		Shopping:      NewShoppingRepository(db),
-		Inconsistency: NewInconsistencyRepository(db),
-		db:            db,
+		Shopping:      NewShoppingRepository(dB),
+		Inconsistency: NewInconsistencyRepository(dB),
+		db:            dB,
 	}, nil
 }
 
