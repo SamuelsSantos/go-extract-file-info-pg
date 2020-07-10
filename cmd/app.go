@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/desafios-job/import-data/infraestructure/config"
+	config "github.com/desafios-job/import-data/infraestructure/configs"
 	"github.com/desafios-job/import-data/infraestructure/persistence"
 	"github.com/desafios-job/import-data/service"
 	"github.com/go-chi/chi"

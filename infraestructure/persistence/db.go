@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/desafios-job/import-data/domain/repository"
-	"github.com/desafios-job/import-data/infraestructure/config"
+	config "github.com/desafios-job/import-data/infraestructure/configs"
 )
 
 const dbURL = "host=%s port=%s user=%s password=%s dbname=%s sslmode=disable "
