@@ -11,3 +11,11 @@ type Inconsistency struct {
 
 // Inconsistencies is collection of inconsistency
 type Inconsistencies []*Inconsistency
+
+// NewInconsistency instantiating uninitialized objects
+func NewInconsistency(filename, errorMsg sql.NullString) *Inconsistency {
+	return &Inconsistency{
+		FileName:     filename,
+		ErrorMessage: errorMsg,
+	}
+}

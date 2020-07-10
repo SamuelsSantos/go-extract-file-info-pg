@@ -1,36 +1,44 @@
 package config
 
-import "os"
+import "fmt"
+
+type dbConfig struct {
+	Host     string
+	Port     string
+	User     string
+	Name     string
+	Password string
+	Driver   string
+}
+
+type serverConfig struct {
+	Port string
+}
 
 // Config struct
 type Config struct {
-	DbHost     string
-	DbPort     string
-	DbUser     string
-	DbName     string
-	DbPassword string
-	DbDriver   string
-	ServerPort string
+	Server *serverConfig
+	Db     *dbConfig
 }
 
-func getenv(key, fallback string) string {
-	value := os.Getenv(key)
-	if len(value) == 0 {
-		return fallback
+//NewConfig new struct to configurations enviroments
+func NewConfig() *Config {
+	return &Config{
+		Server: &serverConfig{
+			Port: GetenvString("SERVER_PORT", "8085"),
+		},
+		Db: &dbConfig{
+			Host:     GetenvString("DB_HOST", "127.0.0.1"),
+			Port:     GetenvString("DB_PORT", "5432"),
+			User:     GetenvString("DB_USER", "postgres"),
+			Name:     GetenvString("DB_NAME", "import-data"),
+			Password: GetenvString("DB_PASSWORD", "db@123A"),
+			Driver:   GetenvString("DB_DRIVER", "postgres"),
+		},
 	}
-	return value
 }
 
-//GetConf read configurations
-func GetConf() Config {
-
-	return Config{
-		DbHost:     getenv("DB_HOST", "localhost"),
-		DbPort:     getenv("DB_PORT", "5432"),
-		DbUser:     getenv("DB_USER", "postgres"),
-		DbName:     getenv("DB_NAME", "import-data"),
-		DbPassword: getenv("DB_PASSWORD", "db@123A"),
-		DbDriver:   getenv("DB_DRIVER", "postgres"),
-		ServerPort: getenv("SERVER_PORT", "8085"),
-	}
+// ToString return string values from enviroments
+func (cfg *dbConfig) ToString() string {
+	return fmt.Sprintf("Host: %s\nPort:%s\nUser: %s\nDB:%s", cfg.Host, cfg.Port, cfg.User, cfg.Name)
 }

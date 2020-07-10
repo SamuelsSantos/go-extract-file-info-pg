@@ -13,20 +13,13 @@ import (
 
 func doProcess(filename string) {
 
-	conf := config.GetConf()
+	cfg := config.NewConfig()
 
 	if len(filename) == 0 {
 		log.Fatal(errors.New("Invalid input. "))
 	}
 
-	services, err := persistence.NewRepositories(
-		conf.DbDriver,
-		conf.DbUser,
-		conf.DbPassword,
-		conf.DbPort,
-		conf.DbHost,
-		conf.DbName,
-	)
+	services, err := persistence.NewRepositories(*cfg)
 
 	if err != nil {
 		panic(err)
@@ -34,12 +27,7 @@ func doProcess(filename string) {
 
 	defer services.Close()
 
-	dw := service.DWNeoway{
-		FileName:         filename,
-		InconsistencyApp: service.NewInconsistencyApp(services.Inconsistency),
-		ShoppingApp:      service.NewShoppingApp(services.Shopping),
-		LayoutFile:       *service.NeowayLayout(),
-	}
+	dw := service.NewNeowayDW(filename, *services)
 
 	er := dw.Clean()
 	if er != nil {
@@ -51,7 +39,7 @@ func doProcess(filename string) {
 		log.Fatal(err)
 	}
 
-	shopping, inconsistencies := dw.Transform(*rows)
+	shopping, inconsistencies := dw.Transform(rows)
 	dw.SaveShoppings(shopping)
 	dw.SaveInconsistencies(inconsistencies)
 }

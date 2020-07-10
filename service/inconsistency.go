@@ -38,8 +38,8 @@ func (i *inconsistencyApp) Truncate() error {
 	return i.repo.Truncate()
 }
 
-// NewInconsistencyApp instance
-func NewInconsistencyApp(repository repository.InconsistencyRepository) InconsistencyAppInterface {
+// NewInconsistencyService instance
+func NewInconsistencyService(repository repository.InconsistencyRepository) InconsistencyAppInterface {
 	return &inconsistencyApp{
 		repo: repository,
 	}

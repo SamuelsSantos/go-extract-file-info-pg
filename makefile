@@ -5,7 +5,8 @@ VOLUME=$VOLUME_PATH
 FILENAME=$FILENAME
 
 clean:
-	go clean
+	rm -rf build
+	go clean -modcache
 
 build: clean
 	go build -o build/$(EXTRACTOR) import-data.go
